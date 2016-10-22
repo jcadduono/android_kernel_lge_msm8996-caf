@@ -28,6 +28,18 @@
 #include "mdss_mdp_trace.h"
 #include "mdss_debug.h"
 
+#if defined(CONFIG_LGE_DISPLAY_AOD_SUPPORTED)
+#include "lge/lge_mdss_aod.h"
+#endif
+
+#if defined(CONFIG_LGE_PM_TRITON)
+#include <linux/lib_triton.h>
+#ifdef FPS_BOOST
+u64 last_commit_ms;
+EXPORT_SYMBOL(last_commit_ms);
+#endif
+#endif
+
 #define MDSS_MDP_QSEED3_VER_DOWNSCALE_LIM 2
 #define NUM_MIXERCFG_REGS 3
 #define MDSS_MDP_WB_OUTPUT_BPP	3
@@ -5666,6 +5678,9 @@ int mdss_mdp_display_commit(struct mdss_mdp_ctl *ctl, void *arg,
 		pr_warn("ctl %d error displaying frame\n", ctl->num);
 
 	ctl->play_cnt++;
+#if defined(CONFIG_LGE_PM_TRITON) && defined(FPS_BOOST)
+	last_commit_ms = ktime_to_ms(ktime_get());
+#endif
 	ATRACE_END("flush_kickoff");
 
 done:

@@ -382,6 +382,10 @@ static int32_t msm_flash_off(struct msm_flash_ctrl_t *flash_ctrl,
 		led_trigger_event(flash_ctrl->switch_trigger, 0);
 
 	CDBG("Exit\n");
+
+#ifdef CONFIG_MACH_LGE
+	pr_info("msm_flash_off done\n");
+#endif
 	return 0;
 }
 
@@ -942,8 +946,10 @@ static int32_t msm_flash_get_dt_data(struct device_node *of_node,
 		return rc;
 	}
 
+#ifndef CONFIG_MACH_LGE
 	if (fctrl->flash_driver_type == FLASH_DRIVER_DEFAULT)
 		fctrl->flash_driver_type = FLASH_DRIVER_GPIO;
+#endif
 	CDBG("%s:%d fctrl->flash_driver_type = %d", __func__, __LINE__,
 		fctrl->flash_driver_type);
 

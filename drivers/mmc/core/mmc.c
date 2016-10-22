@@ -1731,12 +1731,6 @@ reinit:
 					mmc_hostname(host), __func__, err);
 			goto free_card;
 		}
-		err = mmc_decode_cid(card);
-		if (err) {
-			pr_err("%s: %s: mmc_decode_cid() fails %d\n",
-					mmc_hostname(host), __func__, err);
-			goto free_card;
-		}
 	}
 
 	/*
@@ -1776,6 +1770,17 @@ reinit:
 					mmc_hostname(host), __func__, err);
 			goto free_card;
 		}
+#if defined(CONFIG_MACH_LGE)
+		/* LGE_CHANGE, 2015-09-23, H1-BSP-FS@lge.com
+		 * decode cid here.
+		 */
+		err = mmc_decode_cid(card);
+		if (err) {
+			pr_err("%s: %s: mmc_decode_cid() fails %d\n",
+					mmc_hostname(host), __func__, err);
+			goto free_card;
+		}
+#endif
 
 		/* If doing byte addressing, check if required to do sector
 		 * addressing.  Handle the case of <2GB cards needing sector
